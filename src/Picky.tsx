@@ -672,9 +672,9 @@ class Picky extends React.PureComponent<PickyProps, PickyState> {
     if(isOpening && !this.props.keepOpen){
       setTimeout(()=>{
         document.addEventListener('click', this.handleOutsideClick, false);
-      }else{
-        document.removeEventListener('click', this.handleOutsideClick, false);
-      }
+      }, 0);
+    } else {
+      document.removeEventListener('click', this.handleOutsideClick, false);
     }
 
     this.setState(

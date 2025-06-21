@@ -344,6 +344,12 @@ class Picky extends React.PureComponent<PickyProps, PickyState> {
       allSelected: this.allSelected(),
     });
     this.focusFilterInput(!!this.state.open);
+
+    if(!this.props.keepOpen){
+      setTimeout(()=>{
+        document.addEventListener('click', this.handleOutsideClick, false)
+      }, 0);
+    }
   }
 
   componentWillUnmount() {
@@ -632,13 +638,18 @@ class Picky extends React.PureComponent<PickyProps, PickyState> {
     // If radio and not keepOpen then auto close it on selecting a value
     // If radio and click to the filter input then don't toggle dropdown
     const keepOpen = this.props.keepOpen || this.props.multiple;
-    if (this.node && this.node.contains(e.target) && keepOpen) {
-      return;
-    }
-    if (this.filter && this.filter.contains(e.target)) {
-      return;
-    }
-    this.toggleDropDown();
+
+    requestAnimationFrame(()=>{
+      if (this.node && this.node.contains(e.target) && keepOpen) {
+        return;
+      }
+      if (this.filter && this.filter.contains(e.target)) {
+        return;
+      }
+      this.setState({open: false},()=>{
+        this.props.onClose?.()
+      });
+    })
   }
 
   focusFilterInput(isOpen: boolean) {
@@ -656,12 +667,14 @@ class Picky extends React.PureComponent<PickyProps, PickyState> {
    * @memberof Picky
    */
   toggleDropDown() {
-    if (!this.state.open) {
-      // Add event listener to listen for clicks to determine if click occured outside the component or not
-      document.addEventListener('click', this.handleOutsideClick, false);
-    } else {
-      // Remove
-      document.removeEventListener('click', this.handleOutsideClick, false);
+    const isOpening = !this.state.open;
+
+    if(isOpening && !this.props.keepOpen){
+      setTimeout(()=>{
+        document.addEventListener('click', this.handleOutsideClick, false);
+      }else{
+        document.removeEventListener('click', this.handleOutsideClick, false);
+      }
     }
 
     this.setState(

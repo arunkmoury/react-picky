@@ -1,5 +1,6 @@
 import dts from 'rollup-plugin-dts';
-import esbuild from 'rollup-plugin-esbuild';
+// import esbuild from 'rollup-plugin-esbuild';
+import typescript from '@rollup/plugin-typescript';
 import css from 'rollup-plugin-css-only';
 // import filesize from 'rollup-plugin-filesize';
 const name = require('./package.json').main.replace(/\.js$/, '');
@@ -20,7 +21,8 @@ const bundle = format => ({
       ? [...plugins, dts()]
       : [
           ...plugins,
-          esbuild(),
+          typescript(),
+          // esbuild(),
           // filesize()
         ],
   external: ['react', 'react-dom'],

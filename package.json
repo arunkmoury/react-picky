@@ -27,6 +27,7 @@
     "@babel/preset-typescript": "^7.10.4",
     "@commitlint/cli": "^8.3.5",
     "@commitlint/config-conventional": "^8.3.4",
+    "@rollup/plugin-typescript": "^12.1.3",
     "@semantic-release/changelog": "^5.0.1",
     "@semantic-release/git": "^9.0.0",
     "@testing-library/react": "^10.0.2",
@@ -39,7 +40,7 @@
     "babel-jest": "^26.3.0",
     "concurrently": "^4.1.2",
     "cypress": "^4.3.0",
-    "esbuild": "^0.25.5",
+    "esbuild": "0.13.15",
     "eslint": "6.8.0",
     "eslint-config-react-app": "^5.2.1",
     "eslint-plugin-flowtype": "4.7.0",
@@ -60,11 +61,10 @@
     "rollup": "^2.26.9",
     "rollup-plugin-css-only": "^2.1.0",
     "rollup-plugin-dts": "^1.4.12",
-    "rollup-plugin-esbuild": "^2.5.0",
     "rollup-plugin-filesize": "^9.0.2",
     "semantic-release": "^17.0.4",
     "tslib": "^2.0.1",
-    "typescript": "^4.0.2"
+    "typescript": "^4.9.5"
   },
   "peerDependencies": {
     "react": ">= 16.8.0",

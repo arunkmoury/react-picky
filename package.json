@@ -8,7 +8,7 @@
     "/dist"
   ],
   "scripts": {
-    "prebuild": "rm -rf dist",
+    "prebuild": "rimraf dist",
     "build": "rollup -c",
     "dev": "rollup -c -w",
     "prepare": "npm run build",
@@ -56,6 +56,7 @@
     "pretty-quick": "^2.0.1",
     "react": "16.13.1",
     "react-dom": "16.13.1",
+    "rimraf": "6.0.1",
     "rollup": "^2.26.9",
     "rollup-plugin-css-only": "^2.1.0",
     "rollup-plugin-dts": "^1.4.12",

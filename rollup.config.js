@@ -1,7 +1,7 @@
 import dts from 'rollup-plugin-dts';
 import esbuild from 'rollup-plugin-esbuild';
 import css from 'rollup-plugin-css-only';
-import filesize from 'rollup-plugin-filesize';
+// import filesize from 'rollup-plugin-filesize';
 const name = require('./package.json').main.replace(/\.js$/, '');
 
 const ext = format =>
@@ -18,7 +18,11 @@ const bundle = format => ({
   plugins:
     format === 'dts'
       ? [...plugins, dts()]
-      : [...plugins, esbuild(), filesize()],
+      : [
+          ...plugins,
+          esbuild(),
+          // filesize()
+        ],
   external: ['react', 'react-dom'],
 });
 

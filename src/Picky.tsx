@@ -319,6 +319,8 @@ class Picky extends React.PureComponent<PickyProps, PickyState> {
   };
   node: HTMLDivElement | null = null;
   filter: HTMLInputElement | null = null;
+  ignoreNextClick = false;
+
   constructor(props: PickyProps) {
     super(props);
     this.state = {
@@ -340,14 +342,14 @@ class Picky extends React.PureComponent<PickyProps, PickyState> {
   }
 
   componentDidMount() {
-    this.setState({
-      allSelected: this.allSelected(),
-    });
+    this.setState({ allSelected: this.allSelected() });
     this.focusFilterInput(!!this.state.open);
 
-    if(!this.props.keepOpen){
-      setTimeout(()=>{
-        document.addEventListener('click', this.handleOutsideClick, false)
+    if (!this.props.keepOpen) {
+      setTimeout(() => {
+        window.requestAnimationFrame(() => {
+          document.addEventListener('click', this.handleOutsideClick, false);
+        });
       }, 0);
     }
   }
@@ -634,22 +636,21 @@ class Picky extends React.PureComponent<PickyProps, PickyState> {
    * @memberof Picky
    */
   handleOutsideClick(e: any) {
-    // If keep open then don't toggle dropdown
-    // If radio and not keepOpen then auto close it on selecting a value
-    // If radio and click to the filter input then don't toggle dropdown
     const keepOpen = this.props.keepOpen || this.props.multiple;
 
-    requestAnimationFrame(()=>{
-      if (this.node && this.node.contains(e.target) && keepOpen) {
+    requestAnimationFrame(() => {
+      if (this.ignoreNextClick) {
+        this.ignoreNextClick = false;
         return;
       }
-      if (this.filter && this.filter.contains(e.target)) {
-        return;
-      }
-      this.setState({open: false},()=>{
-        this.props.onClose?.()
+
+      if (this.node && this.node.contains(e.target) && keepOpen) return;
+      if (this.filter && this.filter.contains(e.target)) return;
+
+      this.setState({ open: false }, () => {
+        this.props.onClose?.();
       });
-    })
+    });
   }
 
   focusFilterInput(isOpen: boolean) {
@@ -669,34 +670,33 @@ class Picky extends React.PureComponent<PickyProps, PickyState> {
   toggleDropDown() {
     const isOpening = !this.state.open;
 
-    if(isOpening && !this.props.keepOpen){
-      setTimeout(()=>{
-        document.addEventListener('click', this.handleOutsideClick, false);
+    if (isOpening && !this.props.keepOpen) {
+      this.ignoreNextClick = true;
+      setTimeout(() => {
+        window.requestAnimationFrame(() => {
+          document.addEventListener('click', this.handleOutsideClick, false);
+        });
       }, 0);
     } else {
       document.removeEventListener('click', this.handleOutsideClick, false);
     }
 
     this.setState(
-      state => {
-        return {
-          ...state,
-          // Toggle open state
-          open: !state.open,
-          filtered: this.props.clearFilterOnClose ? false : state.filtered,
-          filteredOptions: this.props.clearFilterOnClose
-            ? []
-            : state.filteredOptions,
-        };
-      },
+      state => ({
+        ...state,
+        open: !state.open,
+        filtered: this.props.clearFilterOnClose ? false : state.filtered,
+        filteredOptions: this.props.clearFilterOnClose
+          ? []
+          : state.filteredOptions,
+      }),
       () => {
         const isOpen = !!this.state.open;
-        // Prop callbacks
         this.focusFilterInput(isOpen);
-        if (isOpen && this.props.onOpen) {
-          this.props.onOpen();
-        } else if (!isOpen && this.props.onClose) {
-          this.props.onClose();
+        if (isOpen) {
+          this.props.onOpen?.();
+        } else {
+          this.props.onClose?.();
         }
       }
     );
@@ -721,6 +721,7 @@ class Picky extends React.PureComponent<PickyProps, PickyState> {
     );
   }
   render() {
+    console.log('disabled', this.props, this.props.disabled, this.state);
     const {
       className,
       placeholder,

@@ -721,7 +721,6 @@ class Picky extends React.PureComponent<PickyProps, PickyState> {
     );
   }
   render() {
-    console.log('disabled', this.props, this.props.disabled, this.state);
     const {
       className,
       placeholder,
